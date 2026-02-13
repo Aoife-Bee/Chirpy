@@ -15,10 +15,9 @@ app.use(middlewareLogResponse);
 
 app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 
-app.get("/api/metrics",handlerMetrics);
-app.get("/api/reset", handlerReset);
 app.get("/api/healthz", handlerReadiness);
-
+app.get("/admin/metrics",handlerMetrics);
+app.post("/admin/reset", handlerReset);
 
 
 
