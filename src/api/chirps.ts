@@ -11,6 +11,21 @@ export function handlerValidateChirp( req: Request, res: Response) {
         respondWithError(res, 400, "Chirp is too long");
         return;
     }
+    const cleaned = badWordReplacer(params.body);
 
-    respondWithJSON(res, 200, {valid: true});
+    respondWithJSON(res, 200, {cleanedBody: cleaned});
+}
+
+
+function badWordReplacer(string: string): string {
+    const badWords = ["kerfuffle", "sharbert", "fornax"];
+
+    const words = string.split(" ");
+
+    for (let i = 0; i < words.length; i++) {
+        if (badWords.includes(words[i].toLowerCase())) {
+            words[i] = "****";
+        }
+    }
+    return words.join(" ");
 }
