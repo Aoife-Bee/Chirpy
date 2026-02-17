@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { config } from "../config.js";
 
-export function handlerMetrics( req: Request, res: Response) {
+export async function handlerMetrics( req: Request, res: Response) {
     res.type("text/html; charset=utf-8");
     res.send(`<html>
   <body>
