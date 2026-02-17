@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { respondWithJSON,respondWithError } from "./json.js";
+import { respondWithJSON } from "./json.js";
 import { BadRequestError } from "./errors.js";
 
 
