@@ -11,7 +11,7 @@ import {
     } from "./api/middleware.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
-import { handlerCreateChirp } from "./api/chirps.js";
+import { handlerCreateChirp, handlerGetChirps, handlerGetChirpById } from "./api/chirps.js";
 import { handlerCreateUser } from "./api/users.js";
 import { config } from "./config.js";
 
@@ -45,6 +45,22 @@ app.get("/admin/metrics", async (req, res, next) => {
 app.post("/admin/reset", async (req, res, next) => {
     try {
         await handlerReset(req, res);
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.get("/api/chirps", async (req, res, next) => {
+    try {
+        await handlerGetChirps (req, res); 
+    } catch (err) {
+        next(err);
+    }
+});
+
+app.get("/api/chirps/:chirpId", async (req, res, next) => {
+    try {
+        await handlerGetChirpById(req, res);
     } catch (err) {
         next(err);
     }
