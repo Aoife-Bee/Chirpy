@@ -84,7 +84,6 @@ app.post("/api/users", async (req, res, next) => {
 });
 
 app.post("/api/login", async (req, res, next) => {
-    console.log("--- LOGIN ROUTE HIT ---");
     try {
         await handlerLogin(req, res);
     } catch(err) {
