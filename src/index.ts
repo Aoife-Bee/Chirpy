@@ -12,7 +12,7 @@ import {
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerCreateChirp, handlerGetChirps, handlerGetChirpById } from "./api/chirps.js";
-import { handlerCreateUser } from "./api/users.js";
+import { handlerCreateUser, handlerUpdateUser } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config } from "./config.js";
 
@@ -102,6 +102,14 @@ app.post("/api/refresh", async (req, res, next) => {
 app.post("/api/revoke", async (req, res, next) => {
     try {
         await handlerRevoke(req, res);
+    } catch(err) {
+        next(err);
+    }
+});
+
+app.put("/api/users", async (req, res, next) => {
+    try {
+        await handlerUpdateUser(req, res);
     } catch(err) {
         next(err);
     }
