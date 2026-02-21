@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { makeJWT, validateJWT } from "./auth";
-import { UnauthorizedError } from "./api/errors";
+import { makeJWT, validateJWT, getBearerToken } from "./auth";
+import { UnauthorizedError, BadRequestError } from "./api/errors";
 
 describe("JWT Functions", () => {
     const userID = "123-abc";

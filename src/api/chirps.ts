@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import { createChirp, getChirps, getChirpById } from "../db/queries/chirps.js";
 import { respondWithJSON } from "./json.js";
 import { BadRequestError, NotFoundError } from "./errors.js";
+import { validateJWT, getBearerToken } from "../auth.js";
+import { config } from "../config.js";
 
 
 export async function handlerGetChirps(_: Request, res: Response) {
@@ -24,6 +26,10 @@ export async function handlerGetChirpById(req: Request, res: Response) {
 }
 
 export async function handlerCreateChirp( req: Request, res: Response) {
+
+    const token = getBearerToken(req);
+    const sub = validateJWT(token, config.jwt.secret);
+
     type parameters = { body: string, userId: string };
 
     const params: parameters = req.body;
@@ -32,16 +38,13 @@ export async function handlerCreateChirp( req: Request, res: Response) {
     if (!params.body) {
         throw new BadRequestError("Missing required fields: body");
     }
-    if (!params.userId) {
-        throw new BadRequestError("Missing required fields: userId");
-    }
 
     if (params.body.length > maxChirpLength) {
         throw new BadRequestError("Chirp is too long. Max length is 140");
     }
     const cleaned = badWordReplacer(params.body);
 
-    const chirp = await createChirp({ body: cleaned, userId: params.userId });
+    const chirp = await createChirp({ body: cleaned, userId: sub });
 
     if (!chirp) {
         throw new Error("Could not create chirp");
