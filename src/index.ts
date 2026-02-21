@@ -13,6 +13,7 @@ import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerCreateChirp, handlerGetChirps, handlerGetChirpById } from "./api/chirps.js";
 import { handlerCreateUser } from "./api/users.js";
+import { handlerLogin } from "./api/login.js";
 import { config } from "./config.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -78,6 +79,15 @@ app.post("/api/users", async (req, res, next) => {
     try {
         await handlerCreateUser(req, res);
     } catch (err) {
+        next(err);
+    }
+});
+
+app.post("/api/login", async (req, res, next) => {
+    console.log("--- LOGIN ROUTE HIT ---");
+    try {
+        await handlerLogin(req, res);
+    } catch(err) {
         next(err);
     }
 });
