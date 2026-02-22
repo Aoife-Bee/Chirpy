@@ -11,7 +11,7 @@ import {
     } from "./api/middleware.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
-import { handlerCreateChirp, handlerGetChirps, handlerGetChirpById } from "./api/chirps.js";
+import { handlerCreateChirp, handlerGetChirps, handlerGetChirpById, handlerDeleteChirp } from "./api/chirps.js";
 import { handlerCreateUser, handlerUpdateUser } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config } from "./config.js";
@@ -75,6 +75,14 @@ app.post("/api/chirps", async (req, res, next) => {
     }
 });
 
+app.delete("/api/chirps/:chirpId", async (req, res, next) => {
+    try {
+        await handlerDeleteChirp(req, res);
+    } catch (err) {
+        next(err);
+    }
+});
+
 app.post("/api/users", async (req, res, next) => { 
     try {
         await handlerCreateUser(req, res);
@@ -114,6 +122,7 @@ app.put("/api/users", async (req, res, next) => {
         next(err);
     }
 });
+
 
 app.use(middlewareErrorHandler);
 

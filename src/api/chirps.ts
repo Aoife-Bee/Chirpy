@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { createChirp, getChirps, getChirpById } from "../db/queries/chirps.js";
+import { createChirp, getChirps, getChirpById, deleteChirp } from "../db/queries/chirps.js";
 import { respondWithJSON } from "./json.js";
-import { BadRequestError, NotFoundError } from "./errors.js";
+import { BadRequestError, ForbiddenError, NotFoundError } from "./errors.js";
 import { validateJWT, getBearerToken } from "../auth.js";
 import { config } from "../config.js";
 
@@ -70,4 +70,29 @@ function badWordReplacer(string: string): string {
         }
     }
     return words.join(" ");
+}
+
+export async function handlerDeleteChirp(req: Request, res: Response) {
+    const token = getBearerToken(req)
+    const sub = validateJWT(token, config.jwt.secret)
+
+    const { chirpId } = req.params;
+    
+    if (typeof chirpId !== "string") {
+        throw new BadRequestError("Invalid chirp ID");
+    }
+
+    const chirp = await getChirpById(chirpId);
+
+    if (!chirp) {
+        throw new NotFoundError("Chirp not found");
+    }
+
+    if (chirp.userId !== sub) {
+        throw new ForbiddenError("Cannot delete another user's chirps");
+    }
+
+    await deleteChirp(chirpId)
+    res.sendStatus(204);
+
 }
