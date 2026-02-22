@@ -6,8 +6,15 @@ import { validateJWT, getBearerToken } from "../auth.js";
 import { config } from "../config.js";
 
 
-export async function handlerGetChirps(_: Request, res: Response) {
-    const chirps = await getChirps();
+export async function handlerGetChirps(req: Request, res: Response) {
+    let authorId: string | undefined;
+    const authorIdQuery = req.query.authorId;
+
+    if (typeof authorIdQuery === "string") {
+        authorId = authorIdQuery;
+    }
+
+    const chirps = await getChirps(authorId);
     respondWithJSON(res, 200, chirps);
 };
 
@@ -94,5 +101,4 @@ export async function handlerDeleteChirp(req: Request, res: Response) {
 
     await deleteChirp(chirpId)
     res.sendStatus(204);
-
-}
+};
