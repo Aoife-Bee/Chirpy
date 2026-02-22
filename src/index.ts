@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type Request, type Response, type NextFunction } from "express";
 import postgres from "postgres";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -17,6 +17,11 @@ import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config } from "./config.js";
 import { handlerWebhooks } from "./api/webhooks.js";
 
+const asyncHandler =
+  (fn: (req: Request, res: Response) => Promise<void>) =>
+  (req: Request, res: Response, next: NextFunction) =>
+    Promise.resolve(fn(req, res)).catch(next);
+
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
 
@@ -28,109 +33,23 @@ app.use(express.json());
 
 app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 
-app.get("/api/healthz", async (req, res, next) => {
-    try {
-       await handlerReadiness(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
+app.get("/api/healthz", asyncHandler(handlerReadiness));
+app.get("/admin/metrics", asyncHandler(handlerMetrics));
+app.post("/admin/reset", asyncHandler(handlerReset));
 
-app.get("/admin/metrics", async (req, res, next) => {
-    try {
-        await handlerMetrics(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
+app.get("/api/chirps", asyncHandler(handlerGetChirps));
+app.get("/api/chirps/:chirpId", asyncHandler(handlerGetChirpById));
+app.post("/api/chirps", asyncHandler(handlerCreateChirp));
+app.delete("/api/chirps/:chirpId", asyncHandler(handlerDeleteChirp));
 
-app.post("/admin/reset", async (req, res, next) => {
-    try {
-        await handlerReset(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
+app.post("/api/users", asyncHandler(handlerCreateUser));
+app.put("/api/users", asyncHandler(handlerUpdateUser));
 
-app.get("/api/chirps", async (req, res, next) => {
-    try {
-        await handlerGetChirps (req, res); 
-    } catch (err) {
-        next(err);
-    }
-});
+app.post("/api/login", asyncHandler(handlerLogin));
+app.post("/api/refresh", asyncHandler(handlerRefresh));
+app.post("/api/revoke", asyncHandler(handlerRevoke));
 
-app.get("/api/chirps/:chirpId", async (req, res, next) => {
-    try {
-        await handlerGetChirpById(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
-
-app.post("/api/chirps", async (req, res, next) => {
-    try {
-        await handlerCreateChirp(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
-
-app.delete("/api/chirps/:chirpId", async (req, res, next) => {
-    try {
-        await handlerDeleteChirp(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
-
-app.post("/api/users", async (req, res, next) => { 
-    try {
-        await handlerCreateUser(req, res);
-    } catch (err) {
-        next(err);
-    }
-});
-
-app.post("/api/login", async (req, res, next) => {
-    try {
-        await handlerLogin(req, res);
-    } catch(err) {
-        next(err);
-    }
-});
-
-app.post("/api/refresh", async (req, res, next) => {
-    try {
-        await handlerRefresh(req, res);
-    } catch(err) {
-        next(err);
-    }
-});
-
-app.post("/api/revoke", async (req, res, next) => {
-    try {
-        await handlerRevoke(req, res);
-    } catch(err) {
-        next(err);
-    }
-});
-
-app.put("/api/users", async (req, res, next) => {
-    try {
-        await handlerUpdateUser(req, res);
-    } catch(err) {
-        next(err);
-    }
-});
-
-app.post("/api/polka/webhooks", async (req, res, next) => {
-    try {
-        await handlerWebhooks(req, res);
-    } catch(err) {
-        next(err);
-    }
-});
+app.post("/api/polka/webhooks", asyncHandler(handlerWebhooks));
 
 
 app.use(middlewareErrorHandler);
