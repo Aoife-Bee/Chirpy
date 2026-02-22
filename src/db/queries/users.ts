@@ -15,7 +15,7 @@ export async function resetAllUsers() {
     await db.delete(users);
 };
 
-export async function getUserByEmail( email:string ) {
+export async function getUserByEmail( email: string ) {
     const [result] = await db.select()
     .from(users)
     .where(eq(users.email, email))
@@ -37,4 +37,13 @@ export async function updateUserPassword(userId: string, newPassword: string) {
     .where(eq(users.id, userId))
     .returning();
     return user
+}
+
+export async function upgradeUserToChirpyRed(userId: string) {
+    const [result] = await db.update(users)
+    .set({ isChirpyRed: true })
+    .where(eq(users.id, userId))
+    .returning();
+
+    return result;
 }
