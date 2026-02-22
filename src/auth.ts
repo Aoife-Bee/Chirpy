@@ -53,23 +53,31 @@ export function validateJWT(tokenString: string, secret: string): string {
     return decoded.sub;
 }
 
-export function getBearerToken(req: Request): string {
-    if (!req.header) {
+function extractAuthScheme(req: Request, scheme: string): string {
+    const value = req.get("Authorization");
+
+    if (!value) {
         throw new UnauthorizedError("No authorization header");
     }
-    const token = req.get("Authorization");
 
-    if (!token) {
-        throw new UnauthorizedError("No authorization token");
+    const clean = value.replace(new RegExp(`^${scheme}\\s+`, "i"), "").trim();
+
+    if (!clean) {
+        throw new UnauthorizedError("Malformed authorization header");
     }
 
-    const cleanToken = token.replace(/^Bearer\s+/i, "").trim();
-    if (!cleanToken) {
-        throw new UnauthorizedError("Malformed authorization header")
-    }
-    return cleanToken
+    return clean;
+}
+
+
+export function getBearerToken(req: Request): string {
+    return extractAuthScheme(req, "Bearer");
 }
 
 export function makeRefreshToken() {
     return crypto.randomBytes(32).toString("hex");
+}
+
+export function getAPIKey(req: Request): string {
+    return extractAuthScheme(req, "ApiKey")
 }
