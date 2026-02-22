@@ -9,7 +9,8 @@ The goal of this project was to gain hands-on experience with backend server dev
 Through this project, I developed experience in:
 - Designing, creating, and maintaining relational databases
 - Writing SQL queries and serving database results through API responses
-- Building RESTful endpoints using Express - Working with TypeScript in a backend environment
+- Building RESTful endpoints using Express
+- Working with TypeScript in a backend environment
 - Using modern backend tools and libraries such as Drizzle ORM and PostgreSQL
 - Implementing secure authorization and authentication to protect user privacy
 
