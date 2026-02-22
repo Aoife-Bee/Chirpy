@@ -13,7 +13,7 @@ Through this project, I developed experience in:
 - Using modern backend tools and libraries such as Drizzle ORM and PostgreSQL
 - Implementing secure authorization and authentication to protect user privacy
 
-## Tech Stack 
+## 🛠️ Tech Stack 
 
 - TypeScript
 - Express
@@ -29,20 +29,20 @@ Make sure you have:
 - PostgreSQL running locally
 - npm
 
-## Getting Started 
+## 🚀 Getting Started 
 
-### Clone the repository
+### 1️⃣ Clone the repository
 
 ```
 git clone https://github.com/yourusername/chirpy.git
 cd chirpy
 ```
-### Install Dependencies
+### 2️⃣ Install Dependencies
 
 ```
 npm install
 ```
-### Set Environment Variables
+### 3️⃣ Set Environment Variables
 
 Create a .env file in the root of the project:
 ```
@@ -52,7 +52,7 @@ JWT_SECRET=your_secret_here
 POLKA_API_KEY=your_api_key_here
 ```
 
-### Generate and Run Database Migrations 
+### 4️⃣ Generate and Run Database Migrations 
 
 Generate migration files:
 ```
@@ -64,7 +64,7 @@ Apply migrations:
 npm run migrate
 ```
 
-### Starting the server 
+### 5️⃣ Starting the server 
 
 Build the server first:
 ```
@@ -87,12 +87,12 @@ The server will run at:
 http://localhost:8080
 ```
 
-### Run tests
+### 6️⃣ Run tests
 
 ```
 npm test
 ```
-## API Usage 
+## 📋 API Usage 
 
 ### Health Check
 
